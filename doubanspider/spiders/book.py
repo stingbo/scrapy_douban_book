@@ -13,14 +13,11 @@ class BookSpider(scrapy.Spider):
 
         sel = Selector(response)
         #book_list = sel.css('#subject_list > ul > li')
-        #print(book_list)
-        tr_list = sel.css('table  tbody  tr')
+        tr_list = sel.css('.tagCol tbody tr')
         for td_list in tr_list:
             categories = td_list.xpath('td/a/@href').extract()
             for category in categories:
-                #print(category)
                 category_url = 'https://book.douban.com' + category
-                #print(category_url)
                 yield scrapy.Request(category_url, callback=self.parse_book, dont_filter=True)
 
 
@@ -46,3 +43,5 @@ class BookSpider(scrapy.Spider):
         if next_page:
             next_url = 'https://book.douban.com'+next_page
             yield scrapy.http.Request(next_url, callback=self.parse_book, dont_filter=True)
+        else:
+            pass
